@@ -69,6 +69,8 @@ type desktopEntry struct {
 	Category   string
 	Terminal   bool
 	NoDisplay  bool
+
+	DesktopFile string
 }
 
 type monitor struct {
@@ -185,6 +187,7 @@ var pbSleep = flag.String("pbsleep", "", "command for the sleep power bar icon")
 var pbSize = flag.Int("pbsize", 64, "power bar icon size (only works w/ built-in icons)")
 var pbUseIconTheme = flag.Bool("pbuseicontheme", false, "use icon theme instead of built-in icons in power bar")
 var debug = flag.Bool("d", false, "Turn on Debug messages")
+var uwsm = flag.Bool("uwsm", false, "Use uwsm to launch programs")
 
 func main() {
 	timeStart := time.Now()

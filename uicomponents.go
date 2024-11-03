@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/dlasky/gotk3-layershell/layershell"
 	"io/fs"
 	"path/filepath"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
-
+	"github.com/dlasky/gotk3-layershell/layershell"
 	"github.com/gotk3/gotk3/gdk"
 	"github.com/gotk3/gotk3/gtk"
+	log "github.com/sirupsen/logrus"
 )
 
 func setUpPinnedFlowBox() *gtk.FlowBox {
@@ -67,7 +66,7 @@ func setUpPinnedFlowBox() *gtk.FlowBox {
 			btn.Connect("button-release-event", func(row *gtk.Button, e *gdk.Event) bool {
 				btnEvent := gdk.EventButtonNewFromEvent(e)
 				if btnEvent.Button() == 1 {
-					launch(entry.Exec, entry.Terminal, true)
+					launchApp(&entry)
 					return true
 				} else if btnEvent.Button() == 3 {
 					unpinItem(entry.DesktopID)
@@ -76,7 +75,7 @@ func setUpPinnedFlowBox() *gtk.FlowBox {
 				return false
 			})
 			btn.Connect("activate", func() {
-				launch(entry.Exec, entry.Terminal, true)
+				launchApp(&entry)
 			})
 			btn.Connect("enter-notify-event", func() {
 				statusLabel.SetText(entry.CommentLoc)
@@ -258,8 +257,6 @@ func flowBoxButton(entry desktopEntry) *gtk.Button {
 	button.SetLabel(name)
 
 	ID := entry.DesktopID
-	exec := entry.Exec
-	terminal := entry.Terminal
 	desc := entry.CommentLoc
 	if len(desc) > 120 {
 		r := substring(desc, 0, 117)
@@ -275,7 +272,7 @@ func flowBoxButton(entry desktopEntry) *gtk.Button {
 		btnEvent := gdk.EventButtonNewFromEvent(e)
 		if btnEvent.Button() == 1 {
 			if !beenScrolled {
-				launch(exec, terminal, true)
+				launchApp(&entry)
 				return true
 			}
 		} else if btnEvent.Button() == 3 {
@@ -285,7 +282,7 @@ func flowBoxButton(entry desktopEntry) *gtk.Button {
 		return false
 	})
 	button.Connect("activate", func() {
-		launch(exec, terminal, true)
+		launchApp(&entry)
 	})
 	button.Connect("enter-notify-event", func() {
 		statusLabel.SetText(desc)
